@@ -18,22 +18,35 @@ namespace IdentityProvider.Controllers
         public void SignIn()
         {
             var req = WSFederationMessage.CreateFromUri(Request.Url);
-            var resp = FederatedPassiveSecurityTokenServiceOperations.ProcessSignInRequest(
-                req as SignInRequestMessage,
-                new ClaimsPrincipal(new ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.NameIdentifier, "Alice"),
-                    new Claim(ClaimTypes.Email, "alice@wonder.land"),
-                }, "wsfed")),
-                new SimpleSecurityTokenService(new SimpleSecurityTokenServiceConfiguration()));
-            resp.Write(Response.Output);
+
+            try
+            {
+
+                var resp = FederatedPassiveSecurityTokenServiceOperations.ProcessSignInRequest(
+                    req as SignInRequestMessage,
+                    new ClaimsPrincipal(new ClaimsIdentity(new[]
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, "Alice"),
+                        new Claim(ClaimTypes.Email, "alice@wonder.land"),
+                        new Claim("http://example.com/claims/course_enrollment", "Computer Security"),
+                        new Claim("http://example.com/claims/course_enrollment", "Concurrent Programming")
+                    }, "wsfed")),
+                    new LectureSecurityTokenService(new LectureSecurityTokenServiceConfiguration()));
+                    resp.Write(Response.Output);
+                    
+            }
+            catch (InvalidOperationException e)
+            {
+                Response.StatusCode = 400;
+                Response.Write(e.Message);
+            }
             Response.End();
         }
 	}
 
-    public class SimpleSecurityTokenService : SecurityTokenService
+    public class LectureSecurityTokenService : SecurityTokenService
     {
-        public SimpleSecurityTokenService(SecurityTokenServiceConfiguration securityTokenServiceConfiguration) : base(securityTokenServiceConfiguration)
+        public LectureSecurityTokenService(SecurityTokenServiceConfiguration securityTokenServiceConfiguration) : base(securityTokenServiceConfiguration)
         {
         }
 
@@ -42,6 +55,10 @@ namespace IdentityProvider.Controllers
             if (request.AppliesTo == null || request.AppliesTo.Uri == null)
             {
                 throw new InvalidRequestException("AppliesTo must be defined");
+            }
+            if (request.AppliesTo.Uri.ToString() != "https://www.example.net/")
+            {
+                throw new InvalidOperationException("Go away, I do not know you!");
             }
             var scope = new Scope(
                 request.AppliesTo.Uri.AbsoluteUri,
@@ -54,24 +71,29 @@ namespace IdentityProvider.Controllers
             return scope;
         }
 
-        protected override ClaimsIdentity GetOutputClaimsIdentity(ClaimsPrincipal principal, RequestSecurityToken request, Scope scope)
+        protected override ClaimsIdentity GetOutputClaimsIdentity(
+            ClaimsPrincipal principal, 
+            RequestSecurityToken request, 
+            Scope scope)
         {
             var ident = principal.Identities.FirstOrDefault();
             if (ident == null)
             {
                 throw new InvalidRequestException("Requestor must have at least one claims identity");
             }
-            return new ClaimsIdentity(ident.Claims);
+            return ident;
         }
     }
 
-    public class SimpleSecurityTokenServiceConfiguration : SecurityTokenServiceConfiguration
+    public class LectureSecurityTokenServiceConfiguration : SecurityTokenServiceConfiguration
     {
-        public SimpleSecurityTokenServiceConfiguration()
+        public LectureSecurityTokenServiceConfiguration()
         {
-            this.SecurityTokenService = typeof(SimpleSecurityTokenService);
-            var cert = X509StoreExt.GetCertificateFromStoreBySubjectName(StoreName.My, StoreLocation.LocalMachine,
-                                                                         "idp.example.org");
+            this.SecurityTokenService = typeof(LectureSecurityTokenService);
+            var cert = X509StoreExt.GetCertificateFromStoreBySubjectName(
+                StoreName.My, 
+                StoreLocation.LocalMachine,
+                "idp.example.org");
             this.SigningCredentials = new X509SigningCredentials(cert);
             this.TokenIssuerName = "https://idp.example.org";
         }

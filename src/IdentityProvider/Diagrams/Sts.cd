@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="System.IdentityModel.SecurityTokenService">
+    <Position X="0.75" Y="1" Width="3" />
+    <NestedTypes>
+      <Class Name="System.IdentityModel.SecurityTokenService.FederatedAsyncState" Collapsed="true">
+        <TypeIdentifier />
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
