@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RelyingParty2", "RelyingPar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityProvider", "IdentityProvider\IdentityProvider.csproj", "{31915246-140B-4EB4-BF65-3C15C701E629}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcApplication1", "MvcApplication1\MvcApplication1.csproj", "{477B7D50-3511-4026-B1A7-2003D9A76C0C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{31915246-140B-4EB4-BF65-3C15C701E629}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31915246-140B-4EB4-BF65-3C15C701E629}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31915246-140B-4EB4-BF65-3C15C701E629}.Release|Any CPU.Build.0 = Release|Any CPU
+		{477B7D50-3511-4026-B1A7-2003D9A76C0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{477B7D50-3511-4026-B1A7-2003D9A76C0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{477B7D50-3511-4026-B1A7-2003D9A76C0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{477B7D50-3511-4026-B1A7-2003D9A76C0C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
